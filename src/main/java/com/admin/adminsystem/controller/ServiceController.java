@@ -152,7 +152,11 @@ public class ServiceController {
 
         List<ServiceEntity> routes;
         try {
-            routes = service.findServiceByCondition(key);
+            if (key.equals("") || key == null){
+                routes = service.findAll();
+            } else {
+                routes = service.findServiceByCondition(key);
+            }
         } catch (Exception e){
             list.put("code","200");
             list.put("message","ok");

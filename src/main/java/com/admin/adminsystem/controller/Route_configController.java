@@ -180,7 +180,11 @@ public class Route_configController {
 
         List<Route_configEntity> routes;
         try {
-            routes = route_configJPA.findByCondition(key);
+            if (key.equals("") || key == null){
+                routes = route_configJPA.findAll();
+            } else {
+                routes = route_configJPA.findByCondition(key);
+            }
         } catch (Exception e){
             list.put("code", 400);
             list.put("message","ok");
