@@ -7,18 +7,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @JsonIgnoreProperties(value={"hibernateLazyInitializer","handler","fieldHandler"})
@@ -43,34 +38,12 @@ public class Msgflow_LogController {
                 List<Predicate> predicates = new ArrayList<>();
                 if(null != JSON.parseObject(info).get("mindate").toString() && !JSON.parseObject(info).get("mindate").toString().equals("")){
 
-                    String str = JSON.parseObject(info).get("mindate").toString();
-                    str = str.replace("GMT+0800 (CST)","GMT+08:00");
-                    SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
-                    SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-                    Date d = new Date();
-                    try {
-                        d = sf.parse(str);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    String min = sf2.format(d);
-
+                    String min = JSON.parseObject(info).get("mindate").toString();
                     predicates.add(criteriaBuilder.greaterThan(root.get("LOG_TIMESTAMP"), Timestamp.valueOf(min)));
                 }
                 if(null != JSON.parseObject(info).get("maxdate").toString() && !JSON.parseObject(info).get("maxdate").toString().equals("")){
 
-                    String str = JSON.parseObject(info).get("maxdate").toString();
-                    str = str.replace("GMT+0800 (CST)","GMT+08:00");
-                    SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
-                    SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-                    Date d = new Date();
-                    try {
-                        d = sf.parse(str);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    String max = sf2.format(d);
-
+                    String max = JSON.parseObject(info).get("maxdate").toString();
                     predicates.add(criteriaBuilder.lessThan(root.get("LOG_TIMESTAMP"), Timestamp.valueOf(max)));
                 }
                 if(null != JSON.parseObject(info).get("sender_org").toString() && !JSON.parseObject(info).get("sender_org").toString().equals("")){
