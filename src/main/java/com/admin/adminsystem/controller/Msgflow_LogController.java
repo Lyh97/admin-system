@@ -26,12 +26,13 @@ public class Msgflow_LogController {
     @Autowired
     Msgflow_LogJPA msgflow;
 
-    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.POST)
-    public JSONObject selectByCondition (@RequestBody String info) {//
+    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.GET)
+    public JSONObject selectByCondition () {//@RequestBody String info
 
         JSONObject list=new JSONObject();
-        List<Msgflow_LogEntity> resultList;
-        //String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
+        List<Msgflow_LogEntity> resultListTemp;
+        List<Msgflow_LogEntity> resultList= new LinkedList<>();
+        String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
 
         Specification querySpecifi = new Specification<Msgflow_LogEntity>() {
             @Override
@@ -70,15 +71,12 @@ public class Msgflow_LogController {
             }
         };
         try {
-            long startTime = System.currentTimeMillis();
-
-            Sort sort = new Sort(Sort.Direction.DESC, "LOG_TIMESTAMP");
-            PageRequest pageRequest = new PageRequest(Integer.valueOf(JSON.parseObject(info).get("type").toString())-1, 10,sort);
+            PageRequest pageRequest = new PageRequest(Integer.valueOf(JSON.parseObject(info).get("page").toString())-1, 10,null);
 
             Page<Msgflow_LogEntity> msg= msgflow.findAll(querySpecifi,pageRequest);
-            resultList = msg.getContent();
-
-            //Collections.sort(resultList, resultList.get(0));
+            resultListTemp = msg.getContent();
+            resultList.addAll(resultListTemp);
+            Collections.sort(resultList, resultList.get(0));
         } catch(Exception e){
             list.put("code","400");
             list.put("message",e.toString());
