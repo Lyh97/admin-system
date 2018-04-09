@@ -26,13 +26,13 @@ public class Msgflow_LogController {
     @Autowired
     Msgflow_LogJPA msgflow;
 
-    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.GET)
-    public JSONObject selectByCondition () {//@RequestBody String info
+    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.POST)
+    public JSONObject selectByCondition (@RequestBody String info) {//
 
         JSONObject list=new JSONObject();
         List<Msgflow_LogEntity> resultListTemp;
         List<Msgflow_LogEntity> resultList= new LinkedList<>();
-        String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
+        //String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
 
         Specification querySpecifi = new Specification<Msgflow_LogEntity>() {
             @Override
@@ -70,10 +70,13 @@ public class Msgflow_LogController {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
+        long number = 0;
         try {
-            PageRequest pageRequest = new PageRequest(Integer.valueOf(JSON.parseObject(info).get("page").toString())-1, 10,null);
+            Sort sort = new Sort(Sort.Direction.DESC, "LOGTIMESTAMP");
+            PageRequest pageRequest = new PageRequest(Integer.valueOf(JSON.parseObject(info).get("page").toString())-1, 10,sort);
 
             Page<Msgflow_LogEntity> msg= msgflow.findAll(querySpecifi,pageRequest);
+            number = msgflow.count(querySpecifi);
             resultListTemp = msg.getContent();
             resultList.addAll(resultListTemp);
             Collections.sort(resultList, resultList.get(0));
@@ -89,6 +92,7 @@ public class Msgflow_LogController {
 
         list.put("code","200");
         list.put("message","ok");
+        list.put("number",number);
         list.put("data",resultList);//.getContent()
 
         return list;

@@ -48,7 +48,7 @@ public class Msgflow_LogEntity implements Serializable, Comparator<Msgflow_LogEn
     private String ERROR_MSG;
 
     @Column(name = "LOG_TIMESTAMP")
-    private String LOG_TIMESTAMP;
+    private String LOGTIMESTAMP;
 
 
     @Column(name = "CREATOR")
@@ -143,11 +143,11 @@ public class Msgflow_LogEntity implements Serializable, Comparator<Msgflow_LogEn
     }
 
     public String getLOG_TIMESTAMP() {
-        return LOG_TIMESTAMP;
+        return LOGTIMESTAMP;
     }
 
     public void setLOG_TIMESTAMP(String LOG_TIMESTAMP) {
-        this.LOG_TIMESTAMP = LOG_TIMESTAMP;
+        this.LOGTIMESTAMP = LOGTIMESTAMP;
     }
 
     public String getCREATOR() {
