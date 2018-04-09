@@ -26,12 +26,12 @@ public class Msgflow_LogController {
     @Autowired
     Msgflow_LogJPA msgflow;
 
-    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.GET)
-    public JSONObject selectByCondition () {//@RequestBody String info
+    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.POST)
+    public JSONObject selectByCondition (@RequestBody String info) {//
 
         JSONObject list=new JSONObject();
         List<Msgflow_LogEntity> resultList;
-        String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
+        //String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
 
         Specification querySpecifi = new Specification<Msgflow_LogEntity>() {
             @Override
