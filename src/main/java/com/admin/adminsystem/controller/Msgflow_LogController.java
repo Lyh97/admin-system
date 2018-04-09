@@ -6,6 +6,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +26,12 @@ public class Msgflow_LogController {
     @Autowired
     Msgflow_LogJPA msgflow;
 
-    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.POST)
-    public JSONObject selectByCondition (@RequestBody String info) {
+    @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.GET)
+    public JSONObject selectByCondition () {//@RequestBody String info
 
         JSONObject list=new JSONObject();
         List<Msgflow_LogEntity> resultList;
-        System.out.println(info);
-        //String info = "{\"mindate\":\"Sat Mar 15 2018 00:00:00 GMT+0800 (CST)\",\"maxdate\":\"Sat Mar 31 2018 00:00:00 GMT+0800 (CST)\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\"}";
+        String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
 
         Specification querySpecifi = new Specification<Msgflow_LogEntity>() {
             @Override
@@ -68,8 +70,15 @@ public class Msgflow_LogController {
             }
         };
         try {
-            resultList = msgflow.findAll(querySpecifi);
-            Collections.sort(resultList, resultList.get(0));
+            long startTime = System.currentTimeMillis();
+
+            Sort sort = new Sort(Sort.Direction.DESC, "LOG_TIMESTAMP");
+            PageRequest pageRequest = new PageRequest(Integer.valueOf(JSON.parseObject(info).get("type").toString())-1, 10,sort);
+
+            Page<Msgflow_LogEntity> msg= msgflow.findAll(querySpecifi,pageRequest);
+            resultList = msg.getContent();
+
+            //Collections.sort(resultList, resultList.get(0));
         } catch(Exception e){
             list.put("code","400");
             list.put("message",e.toString());
