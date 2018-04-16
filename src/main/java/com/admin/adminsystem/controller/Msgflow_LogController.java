@@ -42,12 +42,12 @@ public class Msgflow_LogController {
                 if(null != JSON.parseObject(info).get("mindate").toString() && !JSON.parseObject(info).get("mindate").toString().equals("")){
 
                     String min = JSON.parseObject(info).get("mindate").toString();
-                    predicates.add(criteriaBuilder.greaterThan(root.get("LOG_TIMESTAMP"), Timestamp.valueOf(min)));
+                    predicates.add(criteriaBuilder.greaterThan(root.get("LOGTIMESTAMP"), Timestamp.valueOf(min)));
                 }
                 if(null != JSON.parseObject(info).get("maxdate").toString() && !JSON.parseObject(info).get("maxdate").toString().equals("")){
 
                     String max = JSON.parseObject(info).get("maxdate").toString();
-                    predicates.add(criteriaBuilder.lessThan(root.get("LOG_TIMESTAMP"), Timestamp.valueOf(max)));
+                    predicates.add(criteriaBuilder.lessThan(root.get("LOGTIMESTAMP"), Timestamp.valueOf(max)));
                 }
                 if(null != JSON.parseObject(info).get("sender_org").toString() && !JSON.parseObject(info).get("sender_org").toString().equals("")){
                     predicates.add(criteriaBuilder.equal(root.get("SENDER_ORG"), JSON.parseObject(info).get("sender_org").toString()));
@@ -79,15 +79,13 @@ public class Msgflow_LogController {
             number = msgflow.count(querySpecifi);
             resultListTemp = msg.getContent();
             resultList.addAll(resultListTemp);
+            if(resultList != null)
             Collections.sort(resultList, resultList.get(0));
         } catch(Exception e){
             list.put("code","400");
             list.put("message",e.toString());
             list.put("data","");//.getContent()
             return list;
-        }
-        for (int i = 0 ;i<resultList.size();i++){
-            resultList.get(i).setLOG_TIMESTAMP(resultList.get(i).getLOG_TIMESTAMP().substring(0,19));
         }
 
         list.put("code","200");
