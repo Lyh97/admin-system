@@ -79,15 +79,13 @@ public class Msgflow_LogController {
             number = msgflow.count(querySpecifi);
             resultListTemp = msg.getContent();
             resultList.addAll(resultListTemp);
+            if(resultList != null)
             Collections.sort(resultList, resultList.get(0));
         } catch(Exception e){
             list.put("code","400");
             list.put("message",e.toString());
             list.put("data","");//.getContent()
             return list;
-        }
-        for (int i = 0 ;i<resultList.size();i++){
-            resultList.get(i).setLOG_TIMESTAMP(resultList.get(i).getLOG_TIMESTAMP().substring(0,19));
         }
 
         list.put("code","200");
