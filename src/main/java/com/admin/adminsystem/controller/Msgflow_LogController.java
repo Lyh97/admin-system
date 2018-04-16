@@ -6,6 +6,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +27,12 @@ public class Msgflow_LogController {
     Msgflow_LogJPA msgflow;
 
     @RequestMapping(value = "/api/msgflow/selectmsg", method = RequestMethod.POST)
-    public JSONObject selectByCondition (@RequestBody String info) {
+    public JSONObject selectByCondition (@RequestBody String info) {//
 
         JSONObject list=new JSONObject();
-        List<Msgflow_LogEntity> resultList;
-        System.out.println(info);
-        //String info = "{\"mindate\":\"Sat Mar 15 2018 00:00:00 GMT+0800 (CST)\",\"maxdate\":\"Sat Mar 31 2018 00:00:00 GMT+0800 (CST)\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\"}";
+        List<Msgflow_LogEntity> resultListTemp;
+        List<Msgflow_LogEntity> resultList= new LinkedList<>();
+        //String info = "{\"mindate\":\"\",\"maxdate\":\"\",\"sender_org\":\"ADXP\",\"sender\":\"\",\"receiver_org\":\"\",\"receiver\":\"\",\"type\":\"true\",\"page\":\"1\"}";
 
         Specification querySpecifi = new Specification<Msgflow_LogEntity>() {
             @Override
@@ -67,8 +70,15 @@ public class Msgflow_LogController {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
+        long number = 0;
         try {
-            resultList = msgflow.findAll(querySpecifi);
+            Sort sort = new Sort(Sort.Direction.DESC, "LOGTIMESTAMP");
+            PageRequest pageRequest = new PageRequest(Integer.valueOf(JSON.parseObject(info).get("page").toString())-1, 10,sort);
+
+            Page<Msgflow_LogEntity> msg= msgflow.findAll(querySpecifi,pageRequest);
+            number = msgflow.count(querySpecifi);
+            resultListTemp = msg.getContent();
+            resultList.addAll(resultListTemp);
             Collections.sort(resultList, resultList.get(0));
         } catch(Exception e){
             list.put("code","400");
@@ -82,6 +92,7 @@ public class Msgflow_LogController {
 
         list.put("code","200");
         list.put("message","ok");
+        list.put("number",number);
         list.put("data",resultList);//.getContent()
 
         return list;
