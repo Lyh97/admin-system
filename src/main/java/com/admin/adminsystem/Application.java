@@ -1,5 +1,5 @@
 package com.admin.adminsystem;
-
+//tepplist
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
