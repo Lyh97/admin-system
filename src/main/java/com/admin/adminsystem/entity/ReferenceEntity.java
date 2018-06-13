@@ -25,6 +25,9 @@ public class ReferenceEntity {
     @Column(name = "DESCRIPTION")
     private String DESCRIPTION;
 
+    @Column(name = "PARENT")
+    private String PARENT;
+
     @Column(name = "INSERT_TIMESTAMP")
     private Date INSERT_TIMESTAMP;
 
@@ -107,5 +110,13 @@ public class ReferenceEntity {
 
     public void setMODIFIER(String MODIFIER) {
         this.MODIFIER = MODIFIER;
+    }
+
+    public String getPARENT() {
+        return PARENT;
+    }
+
+    public void setPARENT(String PARENT) {
+        this.PARENT = PARENT;
     }
 }
