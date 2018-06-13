@@ -1,6 +1,10 @@
 package com.admin.adminsystem.controller;
 
+import com.admin.adminsystem.entity.ReferenceEntity;
+import com.admin.adminsystem.entity.RouteEntity;
 import com.admin.adminsystem.entity.Route_configEntity;
+import com.admin.adminsystem.jpa.ReferenceJPA;
+import com.admin.adminsystem.jpa.RouteJPA;
 import com.admin.adminsystem.jpa.Route_configJPA;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -29,6 +33,11 @@ public class Route_configController {
 
     @Autowired
     private Route_configJPA route_configJPA;
+    @Autowired
+    private RouteJPA routeJPA;
+    @Autowired
+    private ReferenceJPA referenceJPA;
+
 
     @ResponseBody
     @RequestMapping(value = "/api/route-config/add", method = POST)
@@ -39,7 +48,8 @@ public class Route_configController {
         route_configEntity = JSON.parseObject(routeInfo,Route_configEntity.class);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd hh:MM:ss");
-        Date date = new Date();ParsePosition pos = new ParsePosition(0);
+        Date date = new Date();
+        ParsePosition pos = new ParsePosition(0);
         Date nowTime = dateFormat.parse(dateFormat.format(date), pos);
 
         route_configEntity.setINSERT_TIMESTAMP(nowTime);
@@ -130,12 +140,12 @@ public class Route_configController {
         return list;
     }
 
-    @ResponseBody
+
     @RequestMapping(value = "/api/route-config/select-all", method = GET)
     public JSONObject alllist(){
-        Iterable<Route_configEntity> route = new ArrayList<Route_configEntity>();
+        List<RouteEntity> route = new ArrayList<>();
         try {
-            route= route_configJPA.findAll();
+            route= routeJPA.findAll();
         }
         catch (Exception e){
             JSONObject list=new JSONObject();
@@ -149,6 +159,7 @@ public class Route_configController {
         list.put("code", 200);
         list.put("message","ok");
         list.put("data",route);
+
         return list;
     }
 
@@ -195,5 +206,64 @@ public class Route_configController {
         list.put("message","ok");
         list.put("data",routes);//.getContent()
         return list;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/api/route-config/selectplatform", method = GET)
+    public JSONObject listOfPlatform(HttpServletRequest request) {
+        JSONObject list = new JSONObject();
+        List<ReferenceEntity> platform;
+
+        try {
+            platform = referenceJPA.findPlatForm("000");
+        } catch (Exception e){
+            list.put("code", 400);
+            list.put("message",e.toString());
+            list.put("data","");
+            return list;
+        }
+        list.put("code", 200);
+        list.put("message","ok");
+        list.put("data",platform);//.getContent()
+        return list;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/api/route-config/selectsys", method = GET)
+    public JSONObject sysListOfPlatform(HttpServletRequest request) {
+        JSONObject list = new JSONObject();
+        String key = request.getParameter("key");
+        List<ReferenceEntity> system;
+
+        try {
+            system = referenceJPA.findSystem(key);
+        } catch (Exception e){
+            list.put("code", 400);
+            list.put("message",e.toString());
+            list.put("data","");
+            return list;
+        }
+        if(system.size() == 0) {
+            list.put("code", 300);
+            list.put("message","empty");
+            list.put("data","");//.getContent()
+            return list;
+        }
+        list.put("code", 200);
+        list.put("message","ok");
+        list.put("data",system);//.getContent()
+        return list;
+    }
+
+    public static Date timeStampDate(String seconds,String format) {
+        if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
+            return null;
+        }
+        if (format == null || format.isEmpty()) {
+            format = "yyyy-MM-dd HH:mm:ss";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date date = new Date(Long.valueOf(seconds));
+        return date;
     }
 }

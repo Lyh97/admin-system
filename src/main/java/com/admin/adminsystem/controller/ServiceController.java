@@ -1,6 +1,8 @@
 package com.admin.adminsystem.controller;
 
+import com.admin.adminsystem.entity.Service2Entity;
 import com.admin.adminsystem.entity.ServiceEntity;
+import com.admin.adminsystem.jpa.Service2JPA;
 import com.admin.adminsystem.jpa.ServiceJPA;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,18 +31,18 @@ public class ServiceController {
 
     @Autowired
     private ServiceJPA service;
+    @Autowired
+    private Service2JPA service2;
 
     @ResponseBody
     @RequestMapping(value = "api/service/select-all")
     public JSONObject selectall(){//@RequestBody String info)
 
-        //Page<ServiceEntity> servicelist;
-        List<ServiceEntity> servicelist;
+        List<Service2Entity> servicelist;
         JSONObject list=new JSONObject();
-        //Object number = JSON.parseObject(info).get("nubmer");
 
         try {
-            servicelist = service.findAll();//new PageRequest(Integer.valueOf(number.toString()),10)
+            servicelist = service2.findAll();//new PageRequest(Integer.valueOf(number.toString()),10)
         }catch(Exception e){
             list.put("code", 400);
             list.put("message",e.toString());

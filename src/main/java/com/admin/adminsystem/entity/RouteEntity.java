@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "ROUTE_CONFIG")
-public class Route_configEntity implements Serializable{
+public class RouteEntity implements Serializable{
     @Id
     @GeneratedValue(generator = "xxx")
     @GenericGenerator(name = "xxx", strategy = "uuid")
