@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * The type Route entity.
+ * The Type Route entity.
  */
 @Entity
 @Table(name = "ROUTE_CONFIG")
