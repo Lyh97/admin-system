@@ -120,7 +120,7 @@ public class Msgflow_LogController {
     }
 
     /**
-     * Select By Serial Number json object.
+     * Select By Serial number json object.
      *
      * @param info the info
      * @return the json object
