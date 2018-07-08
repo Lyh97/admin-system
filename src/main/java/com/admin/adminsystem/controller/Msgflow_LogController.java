@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 /**
- * The type Msgflow log controller.
+ * The Type Msgflow Log Controller.
  */
 @JsonIgnoreProperties(value={"hibernateLazyInitializer","handler","fieldHandler"})
 @RestController
