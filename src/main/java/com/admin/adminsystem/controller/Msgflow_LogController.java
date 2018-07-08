@@ -33,7 +33,7 @@ public class Msgflow_LogController {
     Msgflow_LogJPA msgflow;
 
     /**
-     * Select By Condition Json Object.
+     * Select By Condition json object.
      *
      * @param info the info
      * @return the json object
